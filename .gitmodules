@@ -1,0 +1,3 @@
+[submodule "libulz"]
+	path = libulz
+	url = https://github.com/rofl0r/libulz.git
