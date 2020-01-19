@@ -3,6 +3,7 @@
 #include <ctype.h>
 #include <string.h>
 #include <assert.h>
+#include <stdlib.h> // _countof
 
 #include "tokenizer.h"
 
@@ -12,8 +13,8 @@ void tokenizer_set_filename(struct tokenizer *t, const char* fn) {
 
 #define ARRAY_SIZE(X) (sizeof(X)/sizeof(X[0]))
 
-off_t tokenizer_ftello(struct tokenizer *t) {
-	return ftello(t->input)-t->getc_buf.buffered;
+int64_t tokenizer_ftello(struct tokenizer *t) {
+	return _ftelli64(t->input)-t->getc_buf.buffered;
 }
 
 static int tokenizer_ungetc(struct tokenizer *t, int c)
@@ -386,7 +387,7 @@ int tokenizer_read_until(struct tokenizer *t, const char* marker, int stop_at_nl
 		tokenizer_ungetc(t, marker[--i]);
 	return 1;
 }
-static int ignore_until(struct tokenizer *t, const char* marker, int col_advance)
+static int ignore_until(struct tokenizer *t, const char* marker, size_t col_advance)
 {
 	t->column += col_advance;
 	int c;
@@ -475,11 +476,11 @@ process_char:;
 		c = tokenizer_getc(t);
 		if((t->flags & TF_PARSE_WIDE_STRINGS) && c == 'L') {
 			c = tokenizer_getc(t);
-			assert(c == '\'' || c == '\"');
+			assert(c == '\'' || c == '"');
 			wide = 1;
 			goto string_handling;
 		} else if (c == '.' && sequence_follows(t, c, "...")) {
-			strcpy(t->buf, "...");
+			strcpy_s(t->buf, _countof(t->buf), "...");
 			out->type = TT_ELLIPSIS;
 			return apply_coords(t, out, s+3, 1);
 		}

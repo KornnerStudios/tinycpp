@@ -26,7 +26,7 @@ int main(int argc, char** argv) {
 	FILE *in = stdin;
 	if(argv[optind] && strcmp(argv[optind], "-")) {
 		fn = argv[optind];
-		in = fopen(fn, "r");
+		fopen_s(&in, fn, "r");
 		if(!in) {
 			perror("fopen");
 			return 1;

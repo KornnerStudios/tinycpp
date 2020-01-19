@@ -1,3 +1,6 @@
 [submodule "libulz"]
 	path = libulz
 	url = https://github.com/rofl0r/libulz.git
+[submodule "getopt"]
+	path = getopt
+	url = https://gist.github.com/7776712.git

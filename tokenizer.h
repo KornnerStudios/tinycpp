@@ -45,9 +45,9 @@ const char* tokentype_to_str(enum tokentype tt);
 
 struct token {
 	enum tokentype type;
-	uint32_t line;
-	uint32_t column;
 	int value;
+	int64_t line;
+	int64_t column;
 };
 
 enum tokenizer_flags {
@@ -57,8 +57,8 @@ enum tokenizer_flags {
 
 struct tokenizer {
 	FILE *input;
-	uint32_t line;
-	uint32_t column;
+	int64_t line;
+	int64_t column;
 	int flags;
 	int custom_count;
 	int peeking;
@@ -75,7 +75,7 @@ void tokenizer_init(struct tokenizer *t, FILE* in, int flags);
 void tokenizer_set_filename(struct tokenizer *t, const char*);
 void tokenizer_set_flags(struct tokenizer *t, int flags);
 int tokenizer_get_flags(struct tokenizer *t);
-off_t tokenizer_ftello(struct tokenizer *t);
+int64_t tokenizer_ftello(struct tokenizer *t);
 void tokenizer_register_marker(struct tokenizer*, enum markertype, const char*);
 void tokenizer_register_custom_token(struct tokenizer*, int tokentype, const char*);
 int tokenizer_next(struct tokenizer *t, struct token* out);
@@ -85,11 +85,6 @@ void tokenizer_skip_until(struct tokenizer *t, const char *marker);
 int tokenizer_skip_chars(struct tokenizer *t, const char *chars, int *count);
 int tokenizer_read_until(struct tokenizer *t, const char* marker, int stop_at_nl);
 int tokenizer_rewind(struct tokenizer *t);
-
-#ifdef __GNUC__
-#pragma GCC diagnostic ignored "-Wunknown-pragmas"
-#endif
-#pragma RcB2 DEP "tokenizer.c"
 
 #endif
 
